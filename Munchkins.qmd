@@ -1,0 +1,649 @@
+---
+title: "Munchkin Boardgame"
+author: "Sathya Venkat"
+format: pdf
+---
+
+```{r setup, include=FALSE}
+#Whether to display Verbatim code chunks in rendered pdf or not
+knitr::opts_chunk$set(echo = TRUE) 
+```
+
+# A) Which Munchkin card is the most likely to be drawn from each deck?
+
+* Analyzing the probabilities of drawing each card from the respective deck is one way. However, to truly understand and predict data accurately, the data should be _granularized_. 
+
+* The game **"Munchkin,"** for those unfamiliar, is an _RPG dungeon-crawling game_. I chose it to gain a significant advantage in future playthroughs. ***By predicting or understanding the probabilities associated with each card, I can develop better tactics and strategies than my opponents***.
+
+# B) Data Collection
+
+* The data was collected from the physical copy of the board game "Munchkin", data was manually entered into spreadsheet and classified into categories. The categorization is as follows.
+
+* The Munchkin board game has 2 decks (168 Cards), which is broken up into: 
+
+**1) Treasure Deck (73 cards)** 
+  
+  
+  i) *Usable once only Cards* : 34 cards
+  ii) *Equipment Cards* : 30 cards
+  iii) *Non Equipment Cards* : 9 cards
+
+**2) Door Deck (95 cards)**
+  
+  i) *Monster Cards* : 37 cards
+  ii) *Curse Cards* : 19 cards
+  iii) *Effect Cards* : 18 cards
+  iv) *Race Cards* : 9 cards
+  v) *Class Cards* : 12 cards
+
+## \underline{B.1) Flowchart deck categories:}
+
+```{mermaid Flowchart}
+flowchart LR
+  A[<center>Munchkin</center>]--> B[<center>Treasure Deck</center>]
+  A[<center>Munchkin</center>]--> C[<center>Door deck</center>]
+  B[<center>Treasure Deck</center>] --> D[Usable once only Cards]
+  B[<center>Treasure Deck</center>] --> E[Equipment Cards]
+  B[<center>Treasure Deck</center>] --> F[Non Equipment Cards]
+  C[<center>Door deck</center>] --> G[Monster Cards]
+  C[<center>Door deck</center>] --> H[Curse Cards]
+  C[<center>Door deck</center>] --> I[Effect Cards]
+  C[<center>Door deck</center>] --> J[Race Cards]
+  C[<center>Door deck</center>] --> K[Class Cards]
+```
+* This data itself is sufficient for predicting the likely card. However, to increase the accuracy, we can get even more granular, by that, i mean, we get more categories and subdivisions of a card type. 
+
+## B.2) Table of sub-categories - Door Deck:
+
+|S.No|Monster Cards|Curse Cards|Effect Cards|Race Cards|Class Cards|
+|:----|:----|:----|:----|:----|:----|
+|1|Level 1|Change Class|Wandering monster|Dwarf|Wizard|
+|2|Level 1|Change Race|Wandering monster|Dwarf|Wizard|
+|3|Level 1|Change Sex|Wandering monster|Dwarf|Wizard|
+|4|Level 1|Chicken on Your Head|Super Munchkin|Elf|Warrior|
+|5|Level 1|Duck of Doom|Super Munchkin|Elf|Warrior|
+|6|Level 2|Income Tax|Half Breed|Elf|Warrior|
+|7|Level 2|Lose a Big Item|Half Breed|Halfling|Cleric|
+|8|Level 2|Lose a Level|10+ to monster|Halfling|Cleric|
+|9|Level 2|Lose a Level|10+ to monster|Halfling|Cleric|
+|10|Level 2|Lose a Small Item|5+ to monster| |Thief|
+|11|Level 4|Lose a Small Item|5+ to monster| |Thief|
+|12|Level 4|Lose the Armor|Divine Intervention| |Thief|
+|13|Level 4|Lose the Footgear|5- to monster| | |
+|14|Level 4|Lose the Headgear|Illusion| | |
+|15|Level 6|Lose Two Cards|Help me out here!| | |
+|16|Level 6|Lose Your Class|Mate| | |
+|17|Level 6|Lose Your Race|Out to Lunch| | |
+|18|Level 6|Malign Mirror|Cheat| | |
+|19|Level 8|Lose biggest bonus item| | | |
+|20|Level 8| | | | |
+|21|Level 8| | | | |
+|22|Level 8| | | | |
+|23|Level 10| | | | |
+|24|Level 10| | | | |
+|25|Level 10| | | | |
+|26|Level 12| | | | |
+|27|Level 12| | | | |
+|28|Level 12| | | | |
+|29|Level 14| | | | |
+|30|Level 14| | | | |
+|31|Level 14| | | | |
+|32|Level 16| | | | |
+|33|Level 16| | | | |
+|34|Level 16| | | | |
+|35|Level 18| | | | |
+|36|Level 18| | | | |
+|37|Level 20| | | | |
+
+## B.3) Table of sub-categories - Treasure Deck:
+
+|S.No|Usable once only Cards|Equipment Cards|Non Equipment Cards|
+|:----|:----|:----|:----|
+|1|Go Up a Level|Head Gear - 1+ bonus|1+ bonus|
+|2|Go Up a Level|Head Gear - 3+ bonus|1+ bonus|
+|3|Go Up a Level|Head Gear - 3+ bonus|2+ bonus|
+|4|Go Up a Level|Head Gear - 1+ bonus and extra|3+ bonus|
+|5|Go Up a Level|Foot Gear - 2+ bonus|3+ bonus|
+|6|Go Up a Level|Foot Gear - Ability no bonus|3+ bonus|
+|7|Go Up a Level|Foot Gear - Ability no bonus|3+ bonus|
+|8|Go Up a Level|One Hand - 1+ bonus|4+ bonus|
+|9|Go Up a Level|One Hand - 2+ bonus|Ability no bonus|
+|10|Additional Combat Power|One Hand - 2+ bonus| |
+|11|Additional Combat Power|One Hand - 3+ bonus| |
+|12|Additional Combat Power|One Hand - 3+ bonus| |
+|13|Additional Combat Power|One Hand - 3+ bonus| |
+|14|Additional Combat Power|One Hand - 3+ bonus| |
+|15|Additional Combat Power|One Hand - 3+ bonus| |
+|16|Additional Combat Power|One Hand - 4+ bonus| |
+|17|Additional Combat Power|One Hand - 4+ bonus| |
+|18|Additional Combat Power|One Hand - 4+ bonus| |
+|19|Additional Combat Power|One Hand - 5+ bonus| |
+|20|Additional Combat Power|One Hand - Ability no bonus| |
+|21|Misc ability|Two Hand - 1+ bonus| |
+|22|Misc ability|Two Hand - 3+ bonus| |
+|23|Misc ability|Two Hand - 3+ bonus| |
+|24|Misc ability|Two Hand - 4+ bonus| |
+|25|Misc ability|Two Hand - 4+ bonus| |
+|26|Misc ability|Armor - 1+ bonus| |
+|27|Misc ability|Armor - 1+ bonus| |
+|28|Misc ability|Armor - 2+ bonus| |
+|29|Misc ability|Armor - 3+ bonus| |
+|30|Misc ability|Armor - 3+ bonus| |
+|31|Misc ability| | |
+|32|Misc ability| | |
+|33|Misc ability| | |
+|34|Misc ability| | |
+
+
+* In the Door Deck, Monster names were removed on data entry and _only levels were considered_, the curse cards with lengthy names were shortened/reworded.
+
+* In the Treasure Deck, _Usable once only cards_ have been sorted on _type of card_ instead. The Equipment and Non Equipment cards are _listed based on type and the combat bonus_.
+
+* \underline{More details / Reference:} 
+  + Rules: [Munchkin Rules](https://munchkin.game/site-munchkin/assets/files/1138/munchkin_rules-1.pdf)
+  + Official website: [Official Website of Munchkin board game](https://munchkin.game/)
+  
+## \underline{B.4) Source Image for Data Collection:}
+
+![Munchkin Board Game](C:/Users/sathy/OneDrive/Documents/R Stuff - Programming/Main assignment 1 - Stats/Munchkin_Boardgame_resized_2.jpg)
+
+
+# \underline{C) Reading the CSV into R}
+
+### C.1) Reading two .csv files, due to granular data in one and surface level data in another. Originating from same source but offering distinct insights.
+```{r Filepath}
+# The file path is the directory where the .csv file is retrieved. 
+
+#The paste() function with sep="" prevents the file path from being truncated, 
+
+#ensuring it fits within the page in the rendered PDF.
+
+file_path = 
+paste("D:/Documents",
+      "/R Stuff - Programming",
+      "/Main assignment 1 - Stats"
+      ,sep="")
+```
+### C.2) Using read.csv() function to read the .csv file in R
+```{r Reading_csv_files}
+mn_ds <- read.csv(paste0(file_path,
+"/data_collection_granular.csv")) # Granular level data
+mn_ds2 <- read.csv(paste0(file_path,
+"/data_collection_surface_level.csv")) # Surface level data
+mn_ds3 <- read.csv(paste0(file_path,
+"/data_collection_treasure_deck.csv")) # Treasure deck
+mn_ds4 <- read.csv(paste0(file_path,
+"/data_collection_door_deck.csv")) # Door deck
+```
+### C.3) Using dim() function to get a dimensions of the dataset
+```{r dimensions_df}
+dim(mn_ds)
+dim(mn_ds2)
+dim(mn_ds3)
+dim(mn_ds4)
+```
+### C.4) Verify whether .qmd and .csv are from the same file path
+```{r validate_file_path_conditional}
+dir <- getwd()
+print(dir)
+
+if (dir == file_path){
+  print("True, the .qmd and .csv are in the same directory")
+} else {
+  print("False, they are from different directories")
+}
+```
+* Both the .qmd and .csv file are from the same file path.
+ 
+# \underline{D) Numerical summaries of Data}
+
+### The Data is discrete / Categorical, hence we cannot estimate mean, median, IQR, min, max and other statistical analysis used for continuous data
+
+## D,1) Column names for each Dataframe
+
+```{r column_names}
+colnames(mn_ds)
+colnames(mn_ds2)
+colnames(mn_ds3)
+colnames(mn_ds4)
+```
+## \underline{D.2) Counts of observations in each category} 
+
+#### D.2.1) For mn_ds2 (Surface level dataset)
+``` {r table_surface_level_dataset}
+# Treasure Deck cards
+Treasure_table_deck = as.data.frame(table(mn_ds2$Treasure.Deck))
+Treasure_table_deck
+# Door Deck cards
+Door_table_deck = as.data.frame(table(mn_ds2$Door.Deck))
+Door_table_deck
+```
+
+#### D.2.2) For mn_ds3 (Treasure Deck)
+```{r Treasure_table_deck}
+# Equipment cards from Treasure Deck
+Equipment_table_deck = as.data.frame(table(mn_ds3$Equipment.Cards)) 
+Equipment_table_deck
+# Non Equipment cards from Treasure Deck
+Non_Equipment_table_deck = as.data.frame(table(mn_ds3$Non.Equipment.Cards)) 
+Non_Equipment_table_deck
+# Usable Once only cardsfrom Treasure Deck
+Usable_once_only_table_deck = as.data.frame(table(mn_ds3$Usable.once.only.Cards)) 
+Usable_once_only_table_deck
+```
+#### D.2.3) For mn_ds4 (Door Deck)
+```{r Door_table_deck}
+# Monster cards from Door Deck
+Monster_table_deck = as.data.frame(table(mn_ds4$Monster.Cards))
+Monster_table_deck
+# Curse cards from Door Deck
+Curse_table_deck = as.data.frame(table(mn_ds4$Curse.Cards))
+Curse_table_deck
+# Effect cards from Door Deck
+Effect_table_deck = as.data.frame(table(mn_ds4$Effect.Cards))
+Effect_table_deck
+# Race cards from Door Deck
+Race_table_deck = as.data.frame(table(mn_ds4$Race.Cards))
+Race_table_deck
+# Class cards from Door Deck
+Class_table_deck = as.data.frame(table(mn_ds4$Class.Cards))
+Class_table_deck
+```
+### Based on the categorical count provided above, the following insights have been obtained.:
+
+\underline{Surface-level Deck:}
+
+i) In the _surface-level dataset_, the Treasure.Deck consists of 73 cards, with "Usable once only Cards" having the **highest count at 34 cards**.
+
+ii) In the _surface-level dataset_, the Door.Deck consists of 95 cards, with "Monster Cards" having the **highest count at 37 cards**.
+
+#### The highest count of cards out of both the deck is the Monster Cards from the Door deck with 37 cards. Next is the Usable once only cards from Treasure deck having 34 cards.
+
+\underline{Treasure Deck:}
+
+i) In the _Treasure deck_, the Equipment.Cards consists of 30 cards, with "One Hand - 5+ bonus" having the **highest count at 5 cards**.
+
+ii) In the _Treasure deck_, the Non.Equipment.Cards consists of 9 cards, with "3+ bonus" having the **highest count at 4 cards**.
+
+iii) In the _Treasure deck_, the Usable.once.only.Cards consists of 34 cards, with "Misc ability" having the **highest count at 14 cards**.
+
+#### The highest count of cards in the Treasure Deck is the Misc ability with 14 cards.
+
+\underline{Door Deck:}
+
+i) In the _Door deck_, the Monster.Cards consist of 37 cards, with "Level 1" and "Level 2" having the **highest count at 5 cards each**.
+
+ii) In the _Door deck_, the Curse.Cards consist of 19 cards, with "Lose a Level" and "Lose a small item" having the **highest count at 2 cards each**.
+
+iii) In the _Door deck_, the Effect.Cards consist of 18 cards, with "Wandering monster" having the **highest count at 3 cards**.
+
+iv) In the _Door deck_, the Race.Cards consist of 9 cards, with "Dwarf","Elf","Halfling" **all being same, with 3 cards each**.
+
+v) In the _Door deck_, the Class.Cards consist of 12 cards, with "Cleric","Theif","Warrior","Wizard" **all being same, with 3 cards each**.''
+
+#### The highest count of cards in the Door Deck is the Level 1 and Level 2 monster cards with 5 cards each.
+
+## \underline{D.3) Proportions of observations in each category} 
+
+#### D.3.1) For mn_ds2 (Surface level dataset)
+``` {r Surface_level_proportions}
+# Treasure Deck cards
+prop_treasure <- table(mn_ds2$Treasure.Deck)
+prop.table(prop_treasure)
+# Door Deck cards
+prop_door <- table(mn_ds2$Door.Deck)
+prop.table(prop_door)
+```
+
+#### D.3.2) For mn_ds3 (Treasure Deck)
+```{r Treasure_proportions}
+# Equipment cards from Treasure Deck
+prop_treasure_equipment <- table(mn_ds3$Equipment.Cards)
+prop.table(prop_treasure_equipment)
+# Non Equipment cards from Treasure Deck
+prop_treasure_non_equipment <- table(mn_ds3$Non.Equipment.Cards) 
+prop.table(prop_treasure_non_equipment)
+# Usable Once only cards from Treasure Deck
+prop_treasure_non_equipment <- table(mn_ds3$Usable.once.only.Cards) 
+prop.table(prop_treasure_non_equipment)
+```
+#### D.3.3) For mn_ds4 (Door Deck)
+```{r Door_proportions}
+# Monster cards from Door Deck
+prop_door_monster <- table(mn_ds4$Monster.Cards)
+prop.table(prop_door_monster)
+# Curse cards from Door Deck
+prop_door_curse <- table(mn_ds4$Curse.Cards)
+prop.table(prop_door_curse)
+# Effect cards from Door Deck
+prop_door_Effect <- table(mn_ds4$Effect.Cards)
+prop.table(prop_door_Effect)
+# Race cards from Door Deck
+prop_door_Race <- table(mn_ds4$Race.Cards)
+prop.table(prop_door_Race)
+# Class cards from Door Deck
+prop_door_Class <- table(mn_ds4$Class.Cards)
+prop.table(prop_door_Class)
+```
+
+## \underline{D.4) Probability of drawing cards without replacement}
+
+#### D.4.1) Probability of drawing the first card from each deck
+
+* *Formula:*
+
+$$ P : Probability$$
+$$ P(First Draw) = \frac{1}{Total Number of Cards}$$
+
+* The probability would vary between Door and Treasure deck due to different total number of cards
+
+$$ P(First Draw from Door Deck) = \frac{1}{95} = 0.01052 $$
+$$ P(First Draw from Treasure Deck) = \frac{1}{73} = 0.01369 $$
+
+* Which is **1.052 % from Door Deck and 1.369 % from Treasure Deck**.
+
+#### D.4.2) Probability of drawing multiple cards from each deck:
+
+* In Munchkins, at the start of the game, *every player is dealt 4 cards to hand from each deck*. Well, i want to find out the **probability for the 4 draws, without replacement**.
+
+* Since we know the *first draw from each deck being  1.052% and 1.369% appropriately*. We need to find out
+
+$$ P(Second Draw) = \frac{1}{(total cards - 1)} $$
+$$  P(Third Draw) = \frac{1}{(total cards - 2)}$$
+$$  P(nth Draw) = \frac{1}{(total cards - n)} $$
+
+* **Door Deck:**
+
+$$ P(Second Draw from Door Deck) = \frac{1}{(95-1)} = \frac{1}{94} = 0.01063 $$
+$$ P(Third Draw from Door Deck) = \frac{1}{(94-1)} = \frac{1}{93} = 0.01075 $$
+$$ P(Fourth Draw from Door Deck)= \frac{1}{(93-1)} = \frac{1}{92} = 0.01086 $$
+
+* **Treasure Deck:**
+
+$$ P(Second Draw from Treasure Deck) = \frac{1}{(73-1)} = \frac{1}{72} = 0.01388 $$
+$$ P(Third Draw from Treasure Deck) = \frac{1}{(72-1)} = \frac{1}{71} = 0.01408 $$
+$$ P(Fourth Draw from Treasure Deck) = \frac{1}{(71-1)} = \frac{1}{70} = 0.01428 $$
+ 
+* The second, third, and fourth draw from subsequent decks are as follows:
+
++ *1.063 %, 1.075 % and 1.086% from Door Deck* and;
++ *1.388 %, 1.408% and 1.428% from Treasure* Deck
+  
+* The difference in probability between 1st and 4th draw for each deck is as follows:
+  
+$$ Door Deck (4th draw - 1st draw) : 1.086 - 1.052 = 0.034$$
+$$Treasure Deck (4th draw - 1st draw) : 1.428 - 1.36 = 0.068$$
+
+
+* From the 1st to 4th draw, there is a 0.034% increase in Door Deck and 0.068% increase from Treasure Deck. 
+
+#### Publication Quality table using Kable 
+
+* Probability values from above data
+
+```{r Kable_and_Knitr_library}
+#| include: false
+library(knitr)
+library(kableExtra)
+```
+
+```{r Probability_dataframe}
+Table_Prob <- data.frame(Treasure_Deck = c(0.01369,0.01388,0.01408,0.01086),
+Door_Deck = c(0.0105, 0.01063, 0.01075, 0.01086))
+rownames(Table_Prob) <- c("P draw(1)","P draw(2)","P draw(3)","P draw(4)")
+```
+
+```{r table_generate_publication}
+kbl(Table_Prob, caption = "Probability Table", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+
+#### D.4.3) Probability of drawing one card, either level 1 or level 2 from the Door Deck:  
+
+* Lets say, we're in level 1, did a decent draw but **only have 3 combat power**, rest of cards aren't helping with combat bonus.
+
+* The _probability of drawing a level 1 and level 2 monster_ is what we are looking for here.
+
+:::{.callout-note}
+_It is a standard 4 player match and all players have drawn cards, so there would be a massive deduction in the number of cards (-16 from each deck) in both decks. 79 cards in the Door Deck and 57 cards in the Treasure deck after deduction_
+:::
+
+* The number of level 1 and level 2 monster is the highest in the monster card, however, ***considering that out of the 16 draws from Door deck, all level 1 and level 2 monster cards (10 total) would've been drawn out***. Though it is highly unlikely, we need to see the probability of it.
+
+* The hypergeometric probability formula is required in order to calculate the probability of drawing 'n' cards of interest for finite no. of cards.
+
+##### \underline{Hypergeometric probability Forumla}
+
+* Reference: [https://en.wikipedia.org/wiki/Hypergeometric_distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution)
+
+$$ P(X = k) = \frac{{\binom{K}{k} \cdot \binom{N - k}{n - k}}}{{\binom{N}{n}}} $$
+
+* To solve this, we need to use _binomial coefficient formula_, which is as follows:
+
+$$ \binom{n}{k} = \frac{n!}{k! \cdot (n-k)!} $$
+
+* **We will be using R, dhyper() function to compute the "Hypergeometric distribution".** 
+
+* Reference: [https://rstudio-pubs-static.s3.amazonaws.com](https://rstudio-pubs-static.s3.amazonaws.com/458415_99ff3bf974464136a9d925cc9d84a95d.html)
+
+```{r hypergeometric_probability_1}
+#It is considered a success if atleast one lvl 1 or lvl 2 monster is drawn.
+success <-1 
+# The population should contain 10 of these success cards
+no._of_success_cards <- 10
+# The population should have total - no._of_success_cards = failures (95-10).
+fail <- 85
+#Total sample size drawn without replacement
+drawn <- 16
+
+hypergeometric_prob = dhyper(success, no._of_success_cards, fail, drawn)
+print(hypergeometric_prob)
+```
+#### The probability of _obtaining a level 1 or level 2 card by any of the 4 players in the initial draw_ is **32.587 %**
+
+#### D.4.4) Probability of kicking down a monster card, either level 1 or level 2 from the Door Deck after 16 cards removed from Door Deck:
+
+* We use the same hypergeometric distribution to find out. Although there are changes now in the total. There are only 79 cards in the Door Deck and 57 cards in the Treasure deck after deduction.
+
+```{r hypergeometric_probability_2}
+#It is considered a success if atleast one lvl 1 or lvl 2 monster is drawn.
+success <-1 
+# The population should contain 10 of these success cards 
+# We still keep it as 10, since we didn't get one
+no._of_success_cards <- 10
+# The population should have total - no._of_success_cards = failures (79-10).
+fail <- 69
+#Total sample size drawn without replacement
+drawn <- 1
+
+hypergeometric_prob = dhyper(success, no._of_success_cards, fail, drawn)
+print(hypergeometric_prob)
+```
+#### Hence, the probability of kicking down a monster card of level 1 or 2 is 12.65%, this can be done with other types of cards aswell, to determine how likely you would draw those cards.
+
+#### D.4.5) Probability of kicking down any monster card from the Door Deck after 16 cards removed from Door Deck:
+
+* Lets say, you drew 2 monster cards in the initial draw. So 37 monster cards in total minus 2, which is 35 cards to be assumed in the deck. Again, only 79 cards in the Door deck after initial draw by 4 players.
+
+```{r hypergeometric_probability_3}
+#It is considered a success if atleast one lvl 1 or lvl 2 monster is drawn.
+success <-1 
+# The population should contain 37 of these success cards 
+# but since you have 2 in your hand, it is 37-2 = 35
+no._of_success_cards <- 35
+# The population should have total - no._of_success_cards = failures (79-35).
+fail <- 44
+#Total sample size drawn without replacement
+drawn <- 1
+
+hypergeometric_prob = dhyper(success, no._of_success_cards, fail, drawn)
+print(hypergeometric_prob)
+```
+#### Hence, the probability of kicking down any monster card is 44.30 %. 
+
+* Since a Door deck predominantly contains monster alongside other cards. Hence, the probability of retrieving the other cards is 1 - 0.4430. 
+
+```{r difference_probability}
+
+1 - 0.4430
+
+```
+
+#### Hence, the probability of kicking down a non monster card is 55.70%. 
+
+### Due to it being a categorical/discrete dataset, hence, the mean, median, mode, IQR, min, max, standard deviation and other continuous data analysis methods are not used.
+
+## \underline{E) Graphical Visualization of Discrete Data}
+
+### Before plotting data, inorder to retrieve x and y labels, using the unique() function. The unique data is extracted, these can be used as labels. 
+```{r data_processing_cleaning}
+# The Surface level dataset labels
+unique_treasure_deck <- unique(mn_ds2$Treasure.Deck)
+unique_door_deck <- unique(mn_ds2$Door.Deck)
+# The Granular level dataset labels
+unique_all_treasure_deck <- unique(mn_ds$Treasure.Deck)
+unique_all_door_deck <- unique(mn_ds$Door.Deck)
+# The Treasure deck dataset labels
+unique_treasure_deck_specific1 <- unique(mn_ds3$Usable.once.only.Cards)
+unique_treasure_deck_specific2 <- unique(mn_ds3$Equipment.Cards)
+unique_treasure_deck_specific3 <- unique(mn_ds3$Non.Equipment.Cards)
+# The Door deck dataset labels
+unique_door_deck_specific1 <- unique(mn_ds4$Monster.Cards)
+unique_door_deck_specific2 <- unique(mn_ds4$Curse.Cards)
+unique_door_deck_specific3 <- unique(mn_ds4$Effect.Cards)
+unique_door_deck_specific4 <- unique(mn_ds4$Race.Cards)
+unique_door_deck_specific5 <- unique(mn_ds4$Class.Cards)
+
+
+# Removing NA values from data set through indexing 
+
+#i) Unique treasure and door deck surface level
+unique_treasure_deck_ds <- unique_treasure_deck[1:3]
+unique_door_deck_ds <- unique_door_deck[1:5]
+#ii) Unique treasure and door deck granular
+unique_all_treasure_deck_ds <- unique_all_treasure_deck[1:25]
+unique_all_door_deck_ds <- unique_all_door_deck[1:47]
+#iii) Unique treasure deck
+unique_treasure_deck_specific1_ds <- unique_treasure_deck_specific1[1:3]
+unique_treasure_deck_specific2_ds <- unique_treasure_deck_specific2[1:17]
+unique_treasure_deck_specific3_ds <- unique_treasure_deck_specific3[1:5]
+#iii) Unique door deck
+unique_door_deck_specific1_ds <- unique_door_deck_specific1[1:11]
+unique_door_deck_specific2_ds <- unique_door_deck_specific2[1:17]
+unique_door_deck_specific3_ds <- unique_door_deck_specific3[1:12]
+unique_door_deck_specific4_ds <- unique_door_deck_specific4[1:3]
+unique_door_deck_specific5_ds <- unique_door_deck_specific5[1:4]
+```
+
+### E.1) Bar Plot of Treasure Cards from mn_ds2 dataset 
+
+```{r barplot_treasure_cards}
+
+library("ggplot2")
+plot_treasure_deck <- ggplot(Treasure_table_deck,
+    aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.5, size = 2.5)+
+  labs(title = "Treasure Cards from Surface Level",
+  y = "Frequency",
+  x = "Treasure Cards", fill = "Treasure Cards", size = 0.5) +
+  theme(axis.text.x = element_blank())
+
+print(plot_treasure_deck)
+```
+
+### E.2) Bar Plot of Door Cards from mn_ds2 dataset 
+
+```{r barplot_door_cards}
+
+library("ggplot2")
+plot_door_deck <- ggplot(Door_table_deck, 
+    aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.5, size = 2.5)+ 
+  labs(title = "Door Cards from Surface Level",
+       y = "Frequency", x = "Door Cards", 
+  fill = "Door Cards", si = 0.5) +
+  theme(axis.text.x = element_blank())
+
+print(plot_door_deck)
+```
+
+### E.3) Bar Plot of Non Equipment Cards from mn_ds3 dataset (Treasure)
+
+```{r barplot_nonequipment_cards}
+
+library("ggplot2")
+plot_door_deck <- ggplot(Non_Equipment_table_deck, 
+    aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.5, size = 2.5)+ 
+  labs(title = "Treasure Cards - Non Equipment",
+       y = "Frequency", x = "Non Equipment Cards", 
+  fill = "Non Equipment Cards", si = 0.5) +
+  theme(axis.text.x = element_blank())
+
+print(plot_door_deck)
+```
+### E.4) Bar Plot of Usable_once_only Cards from mn_ds3 dataset (Treasure)
+
+```{r barplot_usableonceonly_cards}
+
+library("ggplot2")
+plot_door_deck <- ggplot(Usable_once_only_table_deck, 
+    aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.5, size = 2.5)+ 
+  labs(title = "Treasure Cards - Usable_once_only",
+       y = "Frequency", x = "Usable_once_only Cards", 
+  fill = "Usable_once_only Cards", si = 0.5) +
+  theme(axis.text.x = element_blank())
+
+print(plot_door_deck)
+```
+
+### There were a few other plots, but due to the numerous categories, the plots were ugly to read and understand. Hence, they were removed from the file.
+
+## \underline{F) Summary of the Data}
+
+### F.1) My original question was "which Munchkin card was most likely to be drawn from each deck?" 
+
+* Yes, I have found more than i needed. There are multiple layers in this question, because of how granular the data was analyzed.
+
+i) In Door Deck, _"Monster cards" are the highest in number with population 37 out of   95 cards_. 
+  + Within Monster cards, there are _"level 1" and "level 2" monsters that have the    highest in number with population 10 out of 37 cards_. 
+  
+ii) In the Treasure Deck, _"Usable Once only Cards" are the highest in number with population 34 out of 73 cards_. 
+  + Within Treasure cards, _there are "Misc Ability" with 14 cards out of 34_.
+  
+iii) Also the probability of drawing card without replacement, gave the probability on drawing single, multiple and a specific card.
+
+### F.2) I had faced a lot of setbacks when _i was compiling this project/assignment. I took it a bit too far by collecting way too much data_. However, i had my own fun with the data, trying to learn the programming language and interface was nice. 
+
+#### Major setbacks were:
+
+* ggplot2 barplot was not aligning, and sizing issues
+* ggplot2 not sure how to set up the mosaic plot
+
+#### There was a setback on every part of this assignment but it had its own fair share of fun.
+
+### F.3) If i knew this information or had this a couple days back, i wouldnt've lost the game of munchkins.
+
+* From the _hypergeometric probability calculation_, i was able to figure out that, _after the initial draw of 4 cards from each deck (8) and in a 4 player game. When kicking the door_, you have the **probability of 12.65% to kick open a level 1 or 2 monster**.
+
+* Also a **44.3% chance to kick open any monster card as opposed to a 55.7% chance to kick open a non monster card**. Which is astounding, now the future games, _i would play cleric to avoid kicking open to door and keep track of monster and non monster cards to play to my advantage_.
+
+### F.4) The _coolest thing about R is, you can literally navigate the entire console code chunks and data easily_. I used to use python a lot, in Jupyter Notebooks, and this makes things way easier. That was pretty interesting for me.
+
+
+## References:
+
+1) Munchkin Official Rules: [https://munchkin.game/rules-1.pdf](https://munchkin.game/site-munchkin/assets/files/1138/munchkin_rules-1.pdf)
+2) Official website for Munchkins: [https://munchkin.game/](https://munchkin.game/)
+3) Hypergeometric Distribution formula: [https://en.wikipedia.org/wiki/Hypergeometric_distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution)
+4) R syntax for Hypergeometric distribution: [https://rstudio-pubs-static.s3.amazonaws.com](https://rstudio-pubs-static.s3.amazonaws.com/458415_99ff3bf974464136a9d925cc9d84a95d.html)
+5) GGplot syntax: 
+[https://ggplot2.tidyverse.org/](https://ggplot2.tidyverse.org/)
+
+
