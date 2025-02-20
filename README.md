@@ -26,7 +26,8 @@ I used hypergeometric probability formula to calculate probability of drawing 'n
 
 ![image](https://github.com/user-attachments/assets/af1e5e7f-7cb7-4246-9f71-280f35a20986)
 
-F) Summary of the Data
+<u>**Summary of the Data**</u>
+
 **My original question was “which Munchkin card was most likely to be drawn from
  each deck?"**
  
