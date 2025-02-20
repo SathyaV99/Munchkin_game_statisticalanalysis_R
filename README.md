@@ -1,6 +1,6 @@
 **Source for data collection:** As a board game geek! I have the munchikn board game, I manually inputted each card and using excel (i sped it up with my advanced excel formulas and shortcuts), after which i granularized them further to derive 4 additional datasets.
 
-![image](https://github.com/user-attachments/assets/c01d2b3e-04d0-459a-a74c-2abc4080ba29)
+![Munchkin](https://github.com/user-attachments/assets/778ea981-e438-473d-9068-61fbbd900fc2)
 
  
  • Analyzing the probabilities of drawing each card from the respective deck is one way.
