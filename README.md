@@ -6,6 +6,7 @@ Source for data collection: I have the munchikn board game, I manually inputted 
  • Analyzing the probabilities of drawing each card from the respective deck is one way.
  However, to truly understand and predict data accurately, the data should be granular
 ized.
+
  • The game “Munchkin,” for those unfamiliar, is an RPG dungeon-crawling game. I
  chose it to gain a significant advantage in future playthroughs. By predicting or
  understanding the probabilities associated with each card, I can develop better
